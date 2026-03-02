@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Hour Glass — AKQA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garabold:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #121212;
+  --white: #FFFFFF;
+  --off-white: #F5F5F5;
+  --dark: #222222;
+  --body: #414141;
+  --muted: #BFBFBF;
+  --divider: #E5E5E5;
+  --black: #000000;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Inter', -apple-system, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--serif);
+  color: var(--primary);
+  background: var(--white);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* Password Gate */
+#password-gate {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--black);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+#password-gate.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#password-gate .gate-inner {
+  text-align: center;
+}
+
+#password-gate input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #444;
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0;
+  width: 200px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+#password-gate input::placeholder {
+  color: #555;
+  font-family: var(--sans);
+  letter-spacing: 0.1em;
+  font-size: 0.85rem;
+}
+
+#password-gate input:focus {
+  border-bottom-color: #666;
+}
+
+#password-gate .gate-brand {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+}
+
+#password-gate .gate-error {
+  color: #666;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  margin-top: 1.5rem;
+  height: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#password-gate .gate-error.visible {
+  opacity: 1;
+}
+
+/* Main content hidden until unlocked */
+#main-content {
+  display: none;
+}
+
+#main-content.unlocked {
+  display: block;
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Section base styles */
+.section-dark {
+  background: var(--black);
+  color: var(--off-white);
+}
+
+.section-charcoal {
+  background: var(--dark);
+  color: var(--off-white);
+}
+
+.section-light {
+  background: var(--white);
+  color: var(--primary);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.container-wide {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Typography */
+.section-label {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.headline-xl {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 2rem;
+}
+
+.headline-lg {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 2rem;
+}
+
+.body-text {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: var(--body);
+}
+
+.body-text-light {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.meta-text {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.rule {
+  width: 80px;
+  height: 1px;
+  background: var(--muted);
+  border: none;
+  margin: 1.5rem 0;
+}
+
+.rule-full {
+  width: 100%;
+  height: 1px;
+  background: var(--divider);
+  border: none;
+}
+
+.rule-full-dark {
+  width: 100%;
+  height: 1px;
+  background: #333;
+  border: none;
+}
+
+/* ============================================
+   SECTION II — Hero
+   ============================================ */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 2rem 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+#hero .hero-video-wrap {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 177.78vh; /* 16:9 ratio fill */
+  height: 100vh;
+  min-width: 100%;
+  min-height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#hero .hero-video-wrap iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+#hero .hero-video-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1;
+}
+
+#hero .hero-content {
+  max-width: 900px;
+  padding-bottom: 4rem;
+}
+
+#hero .hero-title {
+  font-family: var(--serif);
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--off-white);
+}
+
+#hero .hero-subtitle {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* Sticky Footer */
+#sticky-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  padding: 1.2rem 2rem;
+  z-index: 100;
+  pointer-events: none;
+  display: none;
+}
+
+#sticky-footer.visible {
+  display: block;
+}
+
+/* ============================================
+   SECTION III — Quote
+   ============================================ */
+#quote-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  position: relative;
+  background-image: url('https://dam.mediacorp.sg/image/upload/s--uYMY2UIp--/c_fill,g_auto,h_676,w_1200/f_auto,q_auto/michael-tay---the-hour-glass-hero.jpg?itok=8fkeC1jf');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+.quote-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1;
+}
+
+.pullquote {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: center;
+  max-width: 800px;
+  color: var(--off-white);
+  font-style: italic;
+}
+
+.pullquote-attr {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 2rem;
+  text-align: center;
+}
+
+
+/* ============================================
+   SECTION IV — Market Signal
+   ============================================ */
+#market-signal {
+  padding: 8rem 0;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin: 4rem 0 3rem;
+}
+
+.stat-item {
+  text-align: left;
+  padding: 0 1.5rem;
+  border-left: 1px solid var(--divider);
+}
+
+.stat-item:first-child {
+  padding-left: 0;
+  border-left: none;
+}
+
+.stat-number {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+
+.stat-label {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ============================================
+   SECTION V — Position
+   ============================================ */
+#position {
+  padding: 8rem 0;
+  border-top: 1px solid var(--divider);
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  margin-top: 3rem;
+}
+
+.col-title {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+
+.position-item {
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--divider);
+}
+
+.position-item-label {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.position-item-desc {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  color: var(--body);
+  line-height: 1.6;
+}
+
+.mid-pullquote {
+  margin: 4rem 0;
+  padding: 3rem 0;
+  border-top: 1px solid var(--divider);
+  border-bottom: 1px solid var(--divider);
+}
+
+.mid-pullquote blockquote {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--primary);
+  font-style: italic;
+}
+
+.mid-pullquote cite {
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-top: 1rem;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+/* ============================================
+   SECTION VI — Competitive Frame
+   ============================================ */
+#competitive-frame {
+  padding: 8rem 0;
+  border-top: 1px solid var(--divider);
+  display: none;
+}
+
+.comp-block {
+  margin-bottom: 4rem;
+  padding-bottom: 4rem;
+  border-bottom: 1px solid var(--divider);
+}
+
+.comp-block:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.comp-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.comp-name {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--primary);
+}
+
+.comp-url {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.comp-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.comp-screenshot img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+  background: var(--dark);
+}
+
+.comp-screenshot-placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: var(--dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  color: #666;
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
+.comp-screenshot-label {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  display: block;
+}
+
+.comp-insight {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  color: var(--body);
+  line-height: 1.7;
+  max-width: 700px;
+}
+
+/* ============================================
+   SECTION VII — The Tension
+   ============================================ */
+#tension {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10rem 2rem;
+  position: relative;
+  background-image: url('https://img.thehourglass.com/tachyon/2024/06/Ginza-Japan-TheHourGlass-3.jpg?w=3840&quality=90');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.tension-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 1;
+}
+
+.tension-text {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1.3;
+  text-align: center;
+  max-width: 800px;
+  color: var(--off-white);
+}
+
+/* ============================================
+   SECTION VIII & IX — Pressures / Openings
+   ============================================ */
+.numbered-section {
+  padding: 8rem 0;
+}
+
+.numbered-section + .numbered-section {
+  border-top: 1px solid var(--divider);
+}
+
+.numbered-item {
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--divider);
+}
+
+.numbered-item:last-child {
+  border-bottom: 1px solid var(--divider);
+}
+
+.numbered-item-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.roman-numeral {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.numbered-item-title {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--primary);
+}
+
+.numbered-item-body {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--body);
+  padding-left: 2.5rem;
+}
+
+/* ============================================
+   SECTION X — What AKQA Brings
+   ============================================ */
+#akqa-brings {
+  padding: 8rem 0;
+}
+
+.three-col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+  margin-top: 3rem;
+}
+
+.akqa-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.akqa-card-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #1a1a1a;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.akqa-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.akqa-card-image .placeholder-label {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  color: #555;
+  text-align: center;
+  padding: 1rem;
+}
+
+.akqa-card-title {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--off-white);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.akqa-card-desc {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.akqa-card-ref {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  color: #666;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.featured-case {
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid #333;
+}
+
+.featured-case-image {
+  width: 100%;
+  aspect-ratio: 21 / 9;
+  background: #1a1a1a;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.featured-case-image img,
+.featured-case-image video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featured-case-image .placeholder-label {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  color: #555;
+  text-align: center;
+  padding: 1rem;
+}
+
+.featured-case-title {
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: var(--off-white);
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.featured-case-body {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 700px;
+}
+
+/* ============================================
+   SECTION XI — Potential Outcomes
+   ============================================ */
+#outcomes {
+  padding: 8rem 0;
+  border-top: 1px solid var(--divider);
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 3rem;
+}
+
+.metric-item {
+  padding: 2rem 1.5rem;
+  border-top: 1px solid var(--divider);
+  border-left: 1px solid var(--divider);
+}
+
+.metric-item:nth-child(3n+1) {
+  border-left: none;
+  padding-left: 0;
+}
+
+.metric-item:nth-child(-n+3) {
+  border-top: 1px solid var(--divider);
+}
+
+.metric-number {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 400;
+  color: var(--primary);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.metric-label {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.metric-note {
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  color: var(--body);
+  line-height: 1.5;
+}
+
+/* Interactive Metric Toggles */
+.metric-item[data-metric] {
+  cursor: pointer;
+  transition: opacity 0.3s ease, background 0.2s ease;
+  user-select: none;
+}
+
+.metric-item[data-metric]:hover {
+  background: var(--off-white);
+}
+
+.metric-item.dimmed {
+  opacity: 0.25;
+}
+
+.metric-item.dimmed:hover {
+  opacity: 0.4;
+}
+
+/* Interactive Chart */
+.chart-wrapper {
+  position: relative;
+}
+
+#chart-tooltip {
+  position: absolute;
+  background: rgba(18, 18, 18, 0.95);
+  color: var(--off-white);
+  padding: 14px 18px;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 10;
+  white-space: nowrap;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+#chart-tooltip.visible {
+  opacity: 1;
+}
+
+.chart-hover-line {
+  stroke: var(--muted);
+  stroke-width: 0.5;
+  stroke-dasharray: 4 3;
+  pointer-events: none;
+}
+
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  user-select: none;
+  padding: 0.3rem 0;
+}
+
+.chart-legend-item:hover {
+  opacity: 0.7;
+}
+
+.chart-legend-item.dimmed {
+  opacity: 0.25;
+}
+
+.chart-legend-item.dimmed:hover {
+  opacity: 0.4;
+}
+
+.chart-baseline-note {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  margin-top: 0.75rem;
+  font-style: italic;
+}
+
+/* Case Study Modal */
+.cs-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.94);
+  z-index: 9000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 4rem 2rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.cs-modal-overlay.open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.cs-modal {
+  background: var(--dark);
+  max-width: 800px;
+  width: 100%;
+  position: relative;
+  color: var(--off-white);
+}
+
+.cs-modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 1px solid #555;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  z-index: 2;
+}
+
+.cs-modal-close:hover {
+  border-color: var(--off-white);
+  color: var(--off-white);
+}
+
+.cs-modal-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+.cs-modal-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cs-modal-body {
+  padding: 3rem;
+}
+
+.cs-modal-title {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.cs-modal-subtitle {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 2.5rem;
+}
+
+.cs-modal-section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #333;
+}
+
+.cs-modal-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.cs-modal-section-label {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 0.75rem;
+}
+
+.cs-modal-section-text {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.cs-modal-link {
+  display: inline-block;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid #333;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.cs-modal-link:hover {
+  color: var(--off-white);
+}
+
+.cs-modal-link span {
+  margin-left: 0.5rem;
+  transition: margin-left 0.2s ease;
+}
+
+.cs-modal-link:hover span {
+  margin-left: 0.75rem;
+}
+
+/* Make AKQA cards clickable */
+.akqa-card[data-case],
+.featured-case[data-case] {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.akqa-card[data-case]:hover,
+.featured-case[data-case]:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 600px) {
+  .cs-modal-body {
+    padding: 2rem 1.5rem;
+  }
+
+  .cs-modal-overlay {
+    padding: 2rem 1rem;
+  }
+}
+
+/* ============================================
+   SECTION XII — Close
+   ============================================ */
+#close {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10rem 2rem;
+}
+
+.close-text {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1.3;
+  text-align: center;
+  max-width: 800px;
+  color: var(--off-white);
+}
+
+.close-cta {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.footer-text {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #555;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 900px) {
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  .stat-item {
+    border-left: none;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--divider);
+  }
+
+  .stat-item:first-child,
+  .stat-item:nth-child(2) {
+    border-top: none;
+  }
+
+  .stat-item:first-child {
+    padding-left: 0;
+  }
+
+  .two-col {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .three-col {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .metric-item:nth-child(3n+1) {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  .metric-item:nth-child(2n+1) {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  .comp-gallery {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-item:nth-child(2) {
+    border-top: 1px solid var(--divider);
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-item {
+    border-left: none !important;
+    padding-left: 0 !important;
+  }
+
+  .comp-gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .numbered-item-body {
+    padding-left: 0;
+  }
+
+  #chart-legend {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ==========================================
+     SECTION I — Password Gate
+     ========================================== -->
+<div id="password-gate">
+  <div class="gate-inner">
+    <input type="password" id="gate-input" placeholder="Enter." autocomplete="off" spellcheck="false">
+    <div class="gate-error" id="gate-error">Incorrect.</div>
+  </div>
+  <div class="gate-brand">AKQA</div>
+</div>
+
+<!-- ==========================================
+     MAIN CONTENT
+     ========================================== -->
+<div id="main-content">
+
+  <!-- SECTION II — Hero -->
+  <section id="hero" class="section-dark">
+    <div class="hero-video-wrap">
+      <iframe src="https://www.youtube.com/embed/kPYsCBYL_BQ?autoplay=1&mute=1&controls=0&loop=1&playlist=kPYsCBYL_BQ&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1&enablejsapi=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    <div class="hero-video-overlay"></div>
+    <div class="hero-content reveal" style="position:relative; z-index:2;">
+      <h1 class="hero-title">The Hour Glass</h1>
+      <hr class="rule">
+      <p class="hero-subtitle">A strategic perspective on what comes next.</p>
+    </div>
+  </section>
+
+  <!-- SECTION III — Michael Tay Quote -->
+  <section id="quote-section" class="section-dark">
+    <div class="quote-overlay"></div>
+    <div class="reveal" style="position:relative; z-index:2;">
+      <p class="pullquote">&ldquo;It is more a hub for enthusiasts to gather than a store designed to ensure a commercially focused outcome.&rdquo;</p>
+      <p class="pullquote-attr">Michael Tay &mdash; Group Managing Director</p>
+    </div>
+  </section>
+
+  <!-- SECTION IV — Market Signal -->
+  <section id="market-signal" class="section-light">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">Market Signal</p>
+        <h2 class="headline-xl">The correction is structural.</h2>
+      </div>
+
+      <div class="stats-row reveal">
+        <div class="stat-item">
+          <div class="stat-number">&minus;1.7%</div>
+          <div class="stat-label">Swiss watch exports, FY2025</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">&minus;52%</div>
+          <div class="stat-label">U.S. exports, November 2025</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">&minus;40%</div>
+          <div class="stat-label">China, cumulative two-year decline</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">+4.9%</div>
+          <div class="stat-label">Secondary market price recovery</div>
+        </div>
+      </div>
+
+      <p class="body-text reveal">Fewer watches. Higher prices. Every relationship compounds.</p>
+    </div>
+  </section>
+
+  <!-- SECTION V — Position -->
+  <section id="position" class="section-light">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">Position</p>
+        <h2 class="headline-xl">Where you stand.</h2>
+      </div>
+
+      <div class="two-col">
+        <div class="reveal">
+          <p class="col-title">Scale</p>
+
+          <div class="position-item">
+            <p class="position-item-label">Revenue</p>
+            <p class="position-item-desc">S$1.16B revenue. FY2025. H1 FY2026: +14% revenue, +23% profit.</p>
+          </div>
+
+          <div class="position-item">
+            <p class="position-item-label">Network</p>
+            <p class="position-item-desc">70+ boutiques. Eight countries. Singapore to New Zealand.</p>
+          </div>
+
+          <div class="position-item">
+            <p class="position-item-label">Brand portfolio</p>
+            <p class="position-item-desc">All four dominant brands. Rolex, Patek Philippe, Audemars Piguet, Richard Mille &mdash; 49% of Swiss watch export value.</p>
+          </div>
+
+          <div class="position-item">
+            <p class="position-item-label">Acquisition</p>
+            <p class="position-item-desc">$90M Rolex Australia acquisition. June 2025.</p>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <p class="col-title">Philosophy</p>
+
+          <div class="position-item">
+            <p class="position-item-label">Physical-first</p>
+            <p class="position-item-desc">Michael Tay's aspiration &mdash; &ldquo;the Four Seasons of specialist luxury watch retail.&rdquo;</p>
+          </div>
+
+          <div class="position-item">
+            <p class="position-item-label">Cultural programming</p>
+            <p class="position-item-desc">Malmaison concept salons. Art commissions. IAMWATCH exhibitions.</p>
+          </div>
+
+          <div class="position-item">
+            <p class="position-item-label">Connoisseurship over commerce</p>
+            <p class="position-item-desc">The boutique as cultural hub &mdash; not a store designed for commercially focused outcomes.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION VI — The Competitive Frame -->
+  <section id="competitive-frame" class="section-light">
+    <div class="container-wide">
+      <div class="reveal">
+        <p class="section-label">The Competitive Frame</p>
+        <h2 class="headline-xl">What surrounds you.</h2>
+      </div>
+
+      <!-- Landing Pages -->
+      <div class="comp-block reveal">
+        <div class="comp-header">
+          <h3 class="comp-name">Landing</h3>
+        </div>
+        <div class="comp-gallery">
+          <div class="comp-screenshot">
+            <img src="screenshots/thg-landing.png" alt="THG Landing" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="comp-screenshot-placeholder" style="display:none;">THG &mdash; Landing</div>
+            <span class="comp-screenshot-label">The Hour Glass</span>
+          </div>
+          <div class="comp-screenshot">
+            <img src="screenshots/cortina-landing.png" alt="Cortina Landing" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="comp-screenshot-placeholder" style="display:none;">Cortina &mdash; Landing</div>
+            <span class="comp-screenshot-label">Cortina Watch</span>
+          </div>
+          <div class="comp-screenshot">
+            <img src="screenshots/wos-landing.png" alt="WoS Landing" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="comp-screenshot-placeholder" style="display:none;">WoS &mdash; Landing</div>
+            <span class="comp-screenshot-label">Watches of Switzerland</span>
+          </div>
+          <div class="comp-screenshot">
+            <img src="screenshots/hodinkee-landing.png" alt="Hodinkee Landing" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="comp-screenshot-placeholder" style="display:none;">Hodinkee &mdash; Landing</div>
+            <span class="comp-screenshot-label">Hodinkee</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Pages -->
+      <div class="comp-block reveal">
+        <div class="comp-header">
+          <h3 class="comp-name">Product</h3>
+        </div>
+        <div class="comp-gallery">
+          <div class="comp-screenshot">
+            <img src="screenshots/thg-product.png" alt="THG Product" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="comp-screenshot-placeholder" style="display:none;">THG &mdash; Product</div>
+            <span class="comp-screenshot-label">The Hour Glass</span>
+          </div>
+          <div class="comp-screenshot">
+            <img src="screenshots/cortina-product.png" alt="Cortina Product" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="comp-screenshot-placeholder" style="display:none;">Cortina &mdash; Product</div>
+            <span class="comp-screenshot-label">Cortina Watch</span>
+          </div>
+          <div class="comp-screenshot">
+            <img src="screenshots/wos-product.png" alt="WoS Product" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="comp-screenshot-placeholder" style="display:none;">WoS &mdash; Product</div>
+            <span class="comp-screenshot-label">Watches of Switzerland</span>
+          </div>
+          <div class="comp-screenshot">
+            <img src="screenshots/hodinkee-product.png" alt="Hodinkee Product" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="comp-screenshot-placeholder" style="display:none;">Hodinkee &mdash; Product</div>
+            <span class="comp-screenshot-label">Hodinkee</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Purchase Flow -->
+      <div class="comp-block reveal">
+        <div class="comp-header">
+          <h3 class="comp-name">Purchase</h3>
+        </div>
+        <div class="comp-gallery">
+          <div class="comp-screenshot">
+            <img src="screenshots/thg-purchase.png" alt="THG Purchase" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="comp-screenshot-placeholder" style="display:none;">THG &mdash; Purchase</div>
+            <span class="comp-screenshot-label">The Hour Glass</span>
+          </div>
+          <div class="comp-screenshot">
+            <img src="screenshots/cortina-purchase.png" alt="Cortina Purchase" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="comp-screenshot-placeholder" style="display:none;">Cortina &mdash; Purchase</div>
+            <span class="comp-screenshot-label">Cortina Watch</span>
+          </div>
+          <div class="comp-screenshot">
+            <img src="screenshots/wos-purchase.png" alt="WoS Purchase" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="comp-screenshot-placeholder" style="display:none;">WoS &mdash; Purchase</div>
+            <span class="comp-screenshot-label">Watches of Switzerland</span>
+          </div>
+          <div class="comp-screenshot">
+            <img src="screenshots/hodinkee-purchase.png" alt="Hodinkee Purchase" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="comp-screenshot-placeholder" style="display:none;">Hodinkee &mdash; Purchase</div>
+            <span class="comp-screenshot-label">Hodinkee</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="body-text" style="margin-top:3rem;">Three design for the digital collector. One does not.</p>
+    </div>
+  </section>
+
+  <!-- SECTION VII — The Tension -->
+  <section id="tension" class="section-dark">
+    <div class="tension-overlay"></div>
+    <div class="reveal" style="position:relative; z-index:2;">
+      <p class="tension-text">The boutique ends at the door.<br>The collector's journey does not.</p>
+    </div>
+  </section>
+
+  <!-- SECTION VIII — Four Pressures -->
+  <section class="numbered-section section-light">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">Four Pressures</p>
+        <h2 class="headline-xl">What presses inward.</h2>
+      </div>
+
+      <div class="numbered-item reveal">
+        <div class="numbered-item-header">
+          <span class="roman-numeral">(I)</span>
+          <h3 class="numbered-item-title">The digital vacuum.</h3>
+        </div>
+        <p class="numbered-item-body">Competitors deploy commerce, virtual consultation, online exclusives. The Hour Glass presents an editorial brochure. The gap widens quarterly.</p>
+      </div>
+
+      <div class="numbered-item reveal">
+        <div class="numbered-item-header">
+          <span class="roman-numeral">(II)</span>
+          <h3 class="numbered-item-title">Brand disintermediation.</h3>
+        </div>
+        <p class="numbered-item-body">Rolex launches its own CPO programme. Omega invests in DTC. The retailer's value &mdash; once guaranteed by product access &mdash; demands redefinition through experience, community, and data.</p>
+      </div>
+
+      <div class="numbered-item reveal">
+        <div class="numbered-item-header">
+          <span class="roman-numeral">(III)</span>
+          <h3 class="numbered-item-title">Fragmented client intelligence.</h3>
+        </div>
+        <p class="numbered-item-body">Seventy boutiques. Eight countries. Likely seventy disconnected client records. A collector who purchases in Singapore and services in Tokyo exists as two strangers. Every silo is a missed relationship.</p>
+      </div>
+
+      <div class="numbered-item reveal">
+        <div class="numbered-item-header">
+          <span class="roman-numeral">(IV)</span>
+          <h3 class="numbered-item-title">The discovery gap.</h3>
+        </div>
+        <p class="numbered-item-body">Next-generation collectors form preferences on Instagram, Hodinkee, Reddit &mdash; long before entering a boutique. The physical-first model is invisible in the phase that matters most.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION IX — Four Openings -->
+  <section class="numbered-section section-light">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">Four Openings</p>
+        <h2 class="headline-xl">What opens outward.</h2>
+      </div>
+
+      <div class="numbered-item reveal">
+        <div class="numbered-item-header">
+          <span class="roman-numeral">(I)</span>
+          <h3 class="numbered-item-title">The collector platform.</h3>
+        </div>
+        <p class="numbered-item-body">A members-only digital ecosystem connecting 70+ boutiques into one relationship. Collection tracking. Service history. Priority allocations. Provenance verification. Stickiness no brand DTC channel replicates.</p>
+      </div>
+
+      <div class="numbered-item reveal">
+        <div class="numbered-item-header">
+          <span class="roman-numeral">(II)</span>
+          <h3 class="numbered-item-title">Certified Pre-Owned.</h3>
+        </div>
+        <p class="numbered-item-body">Secondary market prices rose 4.9% in 2025. The Hour Glass holds 45 years of transaction data and regional trust. A curated CPO programme unlocks a new P&amp;L line &mdash; and a new collector entry point.</p>
+      </div>
+
+      <div class="numbered-item reveal">
+        <div class="numbered-item-header">
+          <span class="roman-numeral">(III)</span>
+          <h3 class="numbered-item-title">AI-augmented clienteling.</h3>
+        </div>
+        <p class="numbered-item-body">Deploy intelligent client profiles across every boutique advisor. Purchase history, preference mapping, next-best-action. The Four Seasons aspiration &mdash; operationalised through technology, not training alone.</p>
+      </div>
+
+      <div class="numbered-item reveal">
+        <div class="numbered-item-header">
+          <span class="roman-numeral">(IV)</span>
+          <h3 class="numbered-item-title">Cultural authority at scale.</h3>
+        </div>
+        <p class="numbered-item-body">The Hour Glass already programmes culture &mdash; Malmaison, IAMWATCH, art commissions. A dedicated content platform captures the discovery phase and positions THG as the cultural institution for horology in Asia-Pacific.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION X — What AKQA Brings -->
+  <section id="akqa-brings" class="section-charcoal">
+    <div class="container-wide">
+      <div class="reveal">
+        <p class="section-label" style="color:#666;">What AKQA Brings</p>
+        <h2 class="headline-xl" style="color:var(--off-white);">Three spaces. One system.</h2>
+      </div>
+
+      <div class="three-col">
+        <div class="akqa-card reveal" data-case="hermes">
+          <div class="akqa-card-image">
+            <img src="case-studies/hermes-silk.jpg" alt="AKQA — Hermès House of Silk" onerror="this.style.display='none';this.parentElement.querySelector('.placeholder-label').style.display='block';">
+            <span class="placeholder-label" style="display:none;">AKQA &mdash; Herm&egrave;s La Maison des Carr&eacute;s</span>
+          </div>
+          <h3 class="akqa-card-title">Experience Strategy and Design</h3>
+          <p class="akqa-card-desc">Map the end-to-end collector journey. Identify the highest-value moments &mdash; discovery, acquisition, ownership, advocacy &mdash; and design the digital layer around them.</p>
+          <p class="akqa-card-ref">Reference: Herm&egrave;s La Maison des Carr&eacute;s &mdash; an illustrated digital world for 600+ silk products across 27 countries.</p>
+        </div>
+
+        <div class="akqa-card reveal" data-case="tagheuer">
+          <div class="akqa-card-image">
+            <img src="case-studies/tag-heuer-connected.jpg" alt="AKQA — TAG Heuer Connected" onerror="this.style.display='none';this.parentElement.querySelector('.placeholder-label').style.display='block';">
+            <span class="placeholder-label" style="display:none;">AKQA &mdash; TAG Heuer Connected Modular 45</span>
+          </div>
+          <h3 class="akqa-card-title">Connected Commerce Platform</h3>
+          <p class="akqa-card-desc">Build the infrastructure that unifies 70+ boutiques into one relationship. Appointment booking, virtual consultations, allocation management, collection tracking.</p>
+          <p class="akqa-card-ref">Reference: TAG Heuer Connected Modular 45 &mdash; bridging digital experience with horological craft.</p>
+        </div>
+
+        <div class="akqa-card reveal" data-case="lvmh">
+          <div class="akqa-card-image">
+            <img src="case-studies/lvmh-digital.jpg" alt="AKQA — LVMH Digital" onerror="this.style.display='none';this.parentElement.querySelector('.placeholder-label').style.display='block';">
+            <span class="placeholder-label" style="display:none;">AKQA &mdash; LVMH luxury digital transformation</span>
+          </div>
+          <h3 class="akqa-card-title">AI and Data Intelligence</h3>
+          <p class="akqa-card-desc">Deploy AI-powered clienteling across every boutique advisor. Unified client profiles, cross-market insights, next-best-action. Four Seasons service at scale.</p>
+          <p class="akqa-card-ref">Reference: LVMH &mdash; provenance, personalisation, and client intelligence at scale.</p>
+        </div>
+      </div>
+
+      <!-- Featured Case Study — Generative Store -->
+      <div class="featured-case reveal" data-case="generative">
+        <div class="featured-case-image">
+          <video autoplay muted loop playsinline src="https://videos.ctfassets.net/feazk3r7m969/6lLprhFnCvYITAxfOxsAw1/d8c40c4049294ff06a40c7717a4576ab/WPP-Google_partnership_in_action-_AKQA-s_Generative_Store__built_with_Google_Gemini__transforming_luxury_e-commerce_into_per.mp4"></video>
+          <span class="placeholder-label" style="display:none;">AKQA Generative Store &mdash; Full product experience</span>
+        </div>
+        <h3 class="featured-case-title">The Generative Store</h3>
+        <p class="featured-case-body">Commerce rebuilt from first principles. Every store assembled in the moment of need &mdash; drawing from brand heritage, design systems, and real-time visitor context. Copy, imagery, and narrative adapt to each individual. Not a chatbot. A fully realised boutique experience at global scale. Built with Google Gemini.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION XI — Potential Outcomes -->
+  <section id="outcomes" class="section-light">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">Potential Outcomes</p>
+        <h2 class="headline-xl">Potential impact. Five-year horizon.</h2>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-item reveal" data-metric="0">
+          <div class="metric-number">+5&ndash;8%</div>
+          <div class="metric-label">Digital-influenced revenue</div>
+          <p class="metric-note">Omnichannel attribution builds slowly. Near-zero to meaningful share.</p>
+        </div>
+
+        <div class="metric-item reveal" data-metric="1">
+          <div class="metric-number">+4&ndash;8%</div>
+          <div class="metric-label">Client retention</div>
+          <p class="metric-note">Unified profiles. Cross-market continuity. Incremental, not dramatic.</p>
+        </div>
+
+        <div class="metric-item reveal" data-metric="2">
+          <div class="metric-number">+5&ndash;10%</div>
+          <div class="metric-label">Cross-sell conversion</div>
+          <p class="metric-note">Right watch, right client, right moment. Relationship-driven, not algorithmic.</p>
+        </div>
+
+        <div class="metric-item reveal" data-metric="3">
+          <div class="metric-number">S$5&ndash;8M</div>
+          <div class="metric-label">CPO revenue stream</div>
+          <p class="metric-note">Net new P&amp;L line by Year 5. Provenance data monetised.</p>
+        </div>
+
+        <div class="metric-item reveal" data-metric="4">
+          <div class="metric-number">1.5&ndash;2.5x</div>
+          <div class="metric-label">Content engagement</div>
+          <p class="metric-note">Cultural platform. Organic reach. Compounding takes years.</p>
+        </div>
+
+        <div class="metric-item reveal" data-metric="5">
+          <div class="metric-number">+10&ndash;12%</div>
+          <div class="metric-label">Staff productivity</div>
+          <p class="metric-note">Intelligent tools free time. Adoption curves are real.</p>
+        </div>
+      </div>
+
+      <!-- Interactive Revenue Chart -->
+      <div class="revenue-chart-container reveal" style="margin-top:4rem; padding-top:3rem; border-top:1px solid var(--divider);">
+        <p class="section-label">Cumulative incremental revenue impact</p>
+        <div id="revenue-chart" class="chart-wrapper" style="width:100%;">
+          <svg id="revenue-svg" viewBox="0 0 900 440" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;"></svg>
+          <div id="chart-tooltip"></div>
+        </div>
+        <div id="chart-legend" style="display:flex; flex-wrap:wrap; gap:1.5rem; margin-top:1.5rem;"></div>
+        <p class="chart-baseline-note">Baseline: S$1.16B FY2025 revenue. Values represent incremental impact from digital transformation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION XII — Close -->
+  <section id="close" class="section-dark">
+    <div class="reveal">
+      <p class="close-text">In a market defined by scarcity, the relationship is the product.</p>
+      <hr class="rule" style="margin: 2rem auto;">
+      <p class="close-cta">We'd welcome the conversation.</p>
+    </div>
+  </section>
+
+  <!-- Case Study Modal -->
+  <div class="cs-modal-overlay" id="cs-modal-overlay">
+    <div class="cs-modal" id="cs-modal">
+      <button class="cs-modal-close" id="cs-modal-close">&times;</button>
+      <div class="cs-modal-image" id="cs-modal-image"></div>
+      <div class="cs-modal-body">
+        <h2 class="cs-modal-title" id="cs-modal-title"></h2>
+        <p class="cs-modal-subtitle" id="cs-modal-subtitle"></p>
+        <div class="cs-modal-section">
+          <p class="cs-modal-section-label">Challenge</p>
+          <p class="cs-modal-section-text" id="cs-modal-challenge"></p>
+        </div>
+        <div class="cs-modal-section">
+          <p class="cs-modal-section-label">Solution</p>
+          <p class="cs-modal-section-text" id="cs-modal-solution"></p>
+        </div>
+        <div class="cs-modal-section">
+          <p class="cs-modal-section-label">Result</p>
+          <p class="cs-modal-section-text" id="cs-modal-result"></p>
+        </div>
+        <a class="cs-modal-link" id="cs-modal-link" href="#" target="_blank" rel="noopener">View on akqa.com <span>&rarr;</span></a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end #main-content -->
+
+<!-- Sticky Footer -->
+<footer id="sticky-footer">
+  <span class="footer-text">Made for The Hour Glass</span>
+</footer>
+
+<script>
+(function() {
+  // Password Gate
+  var gate = document.getElementById('password-gate');
+  var input = document.getElementById('gate-input');
+  var error = document.getElementById('gate-error');
+  var content = document.getElementById('main-content');
+  var PASS = 'akqa2026';
+
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      if (input.value === PASS) {
+        gate.classList.add('hidden');
+        content.classList.add('unlocked');
+        document.body.style.overflow = '';
+        var stickyFooter = document.getElementById('sticky-footer');
+        if (stickyFooter) stickyFooter.classList.add('visible');
+        initReveal();
+        drawRevenueChart();
+      } else {
+        error.classList.add('visible');
+        input.value = '';
+        setTimeout(function() {
+          error.classList.remove('visible');
+        }, 2000);
+      }
+    }
+  });
+
+  // Prevent scrolling while gate is active
+  document.body.style.overflow = 'hidden';
+
+  // Focus input on load
+  input.focus();
+
+  // Scroll Reveal with Intersection Observer
+  function initReveal() {
+    var reveals = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+      reveals.forEach(function(el) { el.classList.add('visible'); });
+      return;
+    }
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    reveals.forEach(function(el) {
+      observer.observe(el);
+    });
+  }
+
+  // Interactive Revenue Chart
+  function drawRevenueChart() {
+    var chartContainer = document.getElementById('revenue-chart');
+    var svg = document.getElementById('revenue-svg');
+    if (!svg || !chartContainer) return;
+
+    var W = 900, H = 440;
+    var padL = 70, padR = 30, padT = 20, padB = 50;
+    var chartW = W - padL - padR;
+    var chartH = H - padT - padB;
+
+    var years = ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'];
+    var numPoints = years.length;
+
+    // S$1.16B FY2025 baseline — values in S$ millions (incremental)
+    var streams = [
+      { name: 'Digital-Influenced Revenue', values: [7, 18, 35, 54, 75],   color: '#121212', active: true },
+      { name: 'Client Retention',           values: [4, 12, 24, 38, 52],   color: '#333333', active: true },
+      { name: 'Cross-Sell Conversion',      values: [3, 8, 15, 25, 35],    color: '#555555', active: true },
+      { name: 'CPO Revenue',               values: [0, 1, 3, 5, 7],       color: '#777777', active: true },
+      { name: 'Content Engagement',         values: [3, 8, 16, 25, 35],    color: '#999999', active: true },
+      { name: 'Staff Productivity',         values: [5, 13, 22, 32, 42],   color: '#BBBBBB', active: true }
+    ];
+
+    function getMaxVal() {
+      var totals = [];
+      for (var i = 0; i < numPoints; i++) {
+        var sum = 0;
+        for (var s = 0; s < streams.length; s++) {
+          if (streams[s].active) sum += streams[s].values[i];
+        }
+        totals.push(sum);
+      }
+      var mx = Math.max.apply(null, totals);
+      return Math.ceil(mx / 50) * 50 + 50;
+    }
+
+    function xPos(idx) { return padL + (idx / (numPoints - 1)) * chartW; }
+
+    function computeStacked() {
+      var stacked = [];
+      for (var i = 0; i < numPoints; i++) {
+        var cumulative = 0;
+        stacked[i] = [];
+        for (var s = 0; s < streams.length; s++) {
+          if (streams[s].active) cumulative += streams[s].values[i];
+          stacked[i][s] = cumulative;
+        }
+      }
+      return stacked;
+    }
+
+    function getBottom(stacked, s, i) {
+      for (var k = s - 1; k >= 0; k--) {
+        if (streams[k].active) return stacked[i][k];
+      }
+      return 0;
+    }
+
+    function render() {
+      var maxVal = getMaxVal();
+      var yPos = function(val) { return padT + chartH - (val / maxVal) * chartH; };
+      var stacked = computeStacked();
+      var svgContent = '';
+
+      // Grid lines
+      var gridSteps = 5;
+      for (var g = 0; g <= gridSteps; g++) {
+        var gVal = (maxVal / gridSteps) * g;
+        var gY = yPos(gVal);
+        svgContent += '<line x1="' + padL + '" y1="' + gY + '" x2="' + (W - padR) + '" y2="' + gY + '" stroke="#E5E5E5" stroke-width="0.5"/>';
+        svgContent += '<text x="' + (padL - 14) + '" y="' + (gY + 4) + '" text-anchor="end" fill="#BFBFBF" font-family="Inter,sans-serif" font-size="10">S$' + Math.round(gVal) + 'M</text>';
+      }
+
+      // Stacked areas with bezier curves
+      for (var s = streams.length - 1; s >= 0; s--) {
+        if (!streams[s].active) continue;
+        // Top edge
+        var pathD = 'M ' + xPos(0) + ' ' + yPos(stacked[0][s]);
+        for (var i = 1; i < numPoints; i++) {
+          var pX = xPos(i - 1), pY = yPos(stacked[i - 1][s]);
+          var cX = xPos(i), cY = yPos(stacked[i][s]);
+          var cp = (cX - pX) * 0.4;
+          pathD += ' C ' + (pX + cp) + ' ' + pY + ' ' + (cX - cp) + ' ' + cY + ' ' + cX + ' ' + cY;
+        }
+        // Bottom edge
+        for (var i = numPoints - 1; i >= 0; i--) {
+          var bVal = getBottom(stacked, s, i);
+          if (i === numPoints - 1) {
+            pathD += ' L ' + xPos(i) + ' ' + yPos(bVal);
+          } else {
+            var nI = i + 1;
+            var nB = getBottom(stacked, s, nI);
+            var nX = xPos(nI), nY = yPos(nB);
+            var cX2 = xPos(i), cY2 = yPos(bVal);
+            var cp2 = (nX - cX2) * 0.4;
+            pathD += ' C ' + (nX - cp2) + ' ' + nY + ' ' + (cX2 + cp2) + ' ' + cY2 + ' ' + cX2 + ' ' + cY2;
+          }
+        }
+        pathD += ' Z';
+        svgContent += '<path d="' + pathD + '" fill="' + streams[s].color + '" opacity="0.85"/>';
+      }
+
+      // Cumulative total line along top of stack
+      var totals = [];
+      for (var i = 0; i < numPoints; i++) {
+        var sum = 0;
+        for (var s = 0; s < streams.length; s++) {
+          if (streams[s].active) sum += streams[s].values[i];
+        }
+        totals.push(sum);
+      }
+      // Total line path
+      var totalPath = 'M ' + xPos(0) + ' ' + yPos(totals[0]);
+      for (var i = 1; i < numPoints; i++) {
+        var pX = xPos(i - 1), pY = yPos(totals[i - 1]);
+        var cX = xPos(i), cY = yPos(totals[i]);
+        var cp = (cX - pX) * 0.4;
+        totalPath += ' C ' + (pX + cp) + ' ' + pY + ' ' + (cX - cp) + ' ' + cY + ' ' + cX + ' ' + cY;
+      }
+      svgContent += '<path d="' + totalPath + '" fill="none" stroke="#121212" stroke-width="1.5" opacity="0.4"/>';
+      // Total value labels at each year
+      for (var i = 0; i < numPoints; i++) {
+        var labelY = yPos(totals[i]) - 10;
+        if (labelY < padT + 5) labelY = padT + 14;
+        svgContent += '<text x="' + xPos(i) + '" y="' + labelY + '" text-anchor="middle" fill="#121212" font-family="Inter,sans-serif" font-size="10" font-weight="500" opacity="0.6">S$' + totals[i] + 'M</text>';
+      }
+
+      // X-axis labels
+      for (var i = 0; i < numPoints; i++) {
+        svgContent += '<text x="' + xPos(i) + '" y="' + (H - 12) + '" text-anchor="middle" fill="#BFBFBF" font-family="Inter,sans-serif" font-size="11" letter-spacing="0.05em">' + years[i] + '</text>';
+      }
+
+      // Hover line
+      svgContent += '<line id="hover-line" class="chart-hover-line" x1="0" y1="' + padT + '" x2="0" y2="' + (padT + chartH) + '" style="display:none;"/>';
+      // Overlay for hover
+      svgContent += '<rect id="chart-overlay" x="' + padL + '" y="' + padT + '" width="' + chartW + '" height="' + chartH + '" fill="transparent" style="cursor:crosshair;"/>';
+
+      svg.innerHTML = svgContent;
+      setupHover();
+    }
+
+    function setupHover() {
+      var overlay = document.getElementById('chart-overlay');
+      var hoverLine = document.getElementById('hover-line');
+      var tooltip = document.getElementById('chart-tooltip');
+      if (!overlay || !tooltip) return;
+
+      overlay.addEventListener('mousemove', function(e) {
+        var rect = svg.getBoundingClientRect();
+        var svgX = ((e.clientX - rect.left) / rect.width) * W;
+        var idx = Math.round((svgX - padL) / chartW * (numPoints - 1));
+        idx = Math.max(0, Math.min(numPoints - 1, idx));
+
+        var lineX = xPos(idx);
+        hoverLine.setAttribute('x1', lineX);
+        hoverLine.setAttribute('x2', lineX);
+        hoverLine.style.display = '';
+
+        var html = '<div style="font-weight:500;margin-bottom:8px;font-size:0.75rem;letter-spacing:0.05em;">' + years[idx] + '</div>';
+        var total = 0;
+        for (var s = 0; s < streams.length; s++) {
+          if (!streams[s].active) continue;
+          var val = streams[s].values[idx];
+          total += val;
+          html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">';
+          html += '<span style="width:8px;height:8px;background:' + streams[s].color + ';display:inline-block;border:1px solid #555;flex-shrink:0;"></span>';
+          html += '<span style="flex:1;">' + streams[s].name + '</span>';
+          html += '<span style="font-weight:500;margin-left:12px;">S$' + val + 'M</span>';
+          html += '</div>';
+        }
+        html += '<div style="margin-top:8px;padding-top:8px;border-top:1px solid #444;font-weight:500;display:flex;justify-content:space-between;">';
+        html += '<span>Total incremental</span><span>S$' + total + 'M</span></div>';
+
+        tooltip.innerHTML = html;
+        tooltip.classList.add('visible');
+
+        var cRect = chartContainer.getBoundingClientRect();
+        var tx = e.clientX - cRect.left + 16;
+        var ty = e.clientY - cRect.top - 10;
+        if (tx + 260 > cRect.width) tx = e.clientX - cRect.left - tooltip.offsetWidth - 16;
+        if (ty < 0) ty = 10;
+        tooltip.style.left = tx + 'px';
+        tooltip.style.top = ty + 'px';
+      });
+
+      overlay.addEventListener('mouseleave', function() {
+        hoverLine.style.display = 'none';
+        tooltip.classList.remove('visible');
+      });
+    }
+
+    function toggleStream(index) {
+      // Prevent toggling if it's the last active stream
+      var activeCount = 0;
+      for (var s = 0; s < streams.length; s++) {
+        if (streams[s].active) activeCount++;
+      }
+      if (activeCount === 1 && streams[index].active) return;
+
+      streams[index].active = !streams[index].active;
+
+      // Update metric cards
+      document.querySelectorAll('.metric-item[data-metric]').forEach(function(card) {
+        var idx = parseInt(card.getAttribute('data-metric'));
+        card.classList.toggle('dimmed', !streams[idx].active);
+      });
+
+      // Update legend
+      document.querySelectorAll('.chart-legend-item').forEach(function(item) {
+        var idx = parseInt(item.getAttribute('data-stream'));
+        item.classList.toggle('dimmed', !streams[idx].active);
+      });
+
+      render();
+    }
+
+    // Build legend
+    var legendEl = document.getElementById('chart-legend');
+    if (legendEl) {
+      var legendHTML = '';
+      for (var s = 0; s < streams.length; s++) {
+        legendHTML += '<div class="chart-legend-item" data-stream="' + s + '">';
+        legendHTML += '<span style="width:12px;height:12px;background:' + streams[s].color + ';display:inline-block;border:1px solid #ddd;flex-shrink:0;"></span>';
+        legendHTML += '<span style="font-family:Inter,sans-serif;font-size:0.65rem;color:#BFBFBF;letter-spacing:0.02em;">' + streams[s].name + '</span>';
+        legendHTML += '</div>';
+      }
+      legendEl.innerHTML = legendHTML;
+
+      legendEl.querySelectorAll('.chart-legend-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          toggleStream(parseInt(this.getAttribute('data-stream')));
+        });
+      });
+    }
+
+    // Click handlers on metric cards
+    document.querySelectorAll('.metric-item[data-metric]').forEach(function(card) {
+      card.addEventListener('click', function() {
+        toggleStream(parseInt(this.getAttribute('data-metric')));
+      });
+    });
+
+    // Initial render
+    render();
+  }
+
+  // Case Study Modal
+  var caseStudies = {
+    hermes: {
+      title: 'La Maison des Carr\u00e9s',
+      subtitle: 'AKQA \u2014 Experience Strategy and Design',
+      image: 'case-studies/hermes-silk.jpg',
+      challenge: 'Herm\u00e8s needed to transcend traditional e-commerce to showcase the artistry and fantasy of their silk scarves. The brand required an experience that honoured the creative world of Herm\u00e8s while remaining functional for presenting over 600 products.',
+      solution: 'AKQA created an entirely illustrated, fully responsive digital experience inspired by an idealised physical store. The platform combined artistic presentation with intuitive e-commerce across 27 countries on any device.',
+      result: 'FWA Site of the Day. Lovies Gold for Fashion & Beauty. Spikes Asia Gold for E-Commerce. Featured in Elle, Vogue, Forbes, Creative Review and New York Magazine.',
+      url: 'https://www.akqa.com/work/hermes/house-of-silk/'
+    },
+    tagheuer: {
+      title: 'TAG Heuer Connected Modular 45',
+      subtitle: 'AKQA \u2014 Connected Commerce Platform',
+      image: 'case-studies/tag-heuer-connected.jpg',
+      challenge: 'TAG Heuer needed to bridge the gap between traditional Swiss watchmaking and the connected device era. The product demanded a digital experience worthy of its horological heritage \u2014 one that felt like craftsmanship, not configuration.',
+      solution: 'AKQA designed the Connected Modular 45 configurator \u2014 over 4,000 customisation combinations rendered in real time. Collectors could build their watch digitally, exploring every material, strap, and module before committing to craft.',
+      result: '14.5 million minutes of engagement. A seamless bridge between digital exploration and physical ownership. Proof that luxury and technology can coexist when the experience is designed with the same care as the product.',
+      url: 'https://www.akqa.com/work/tag-heuer/connected-modular-45/'
+    },
+    lvmh: {
+      title: 'LVMH Digital Transformation',
+      subtitle: 'AKQA \u2014 AI and Data Intelligence',
+      image: 'case-studies/lvmh-digital.jpg',
+      challenge: 'The world\u2019s largest luxury group needed to transform its client intelligence infrastructure across multiple maisons \u2014 without losing the intimacy of personal service that defines luxury at its highest level.',
+      solution: 'AKQA built scalable platforms for provenance tracking, personalisation engines, and unified client profiles. Disparate brand ecosystems connected into coherent intelligence \u2014 allowing each maison to know its clients deeply, across every touchpoint.',
+      result: 'Client intelligence at enterprise scale. Provenance, personalisation, and cross-maison insights that strengthen every individual relationship. Technology that disappears behind the quality of the service.',
+      url: 'https://www.akqa.com/work/'
+    },
+    generative: {
+      title: 'The Generative Store',
+      subtitle: 'AKQA \u2014 Built with Google Gemini',
+      image: 'case-studies/generative-store-hero.png',
+      challenge: 'Online shopping had become purely transactional \u2014 efficient but devoid of the emotion, intuition, and discovery that define great physical retail. The gap between browsing a website and being guided through a boutique had never been wider.',
+      solution: 'AKQA reimagined the online store from first principles. Using generative AI, every page is assembled in real time \u2014 adapting copy, imagery, and narrative to each individual visitor\u2019s context, intent, and moment. Not a chatbot. A fully realised boutique.',
+      result: 'Commerce rebuilt as experience. Global scale without sacrificing individual attention. A new paradigm for digital retail where every interaction feels curated, personal, and worthy of the product it represents.',
+      url: 'https://www.akqa.com/work/google/bringing-emotion-and-intuition-back-to-online-shopping/'
+    }
+  };
+
+  function openCaseModal(key) {
+    var data = caseStudies[key];
+    if (!data) return;
+
+    var overlay = document.getElementById('cs-modal-overlay');
+    var imgContainer = document.getElementById('cs-modal-image');
+    document.getElementById('cs-modal-title').textContent = data.title;
+    document.getElementById('cs-modal-subtitle').textContent = data.subtitle;
+    document.getElementById('cs-modal-challenge').textContent = data.challenge;
+    document.getElementById('cs-modal-solution').textContent = data.solution;
+    document.getElementById('cs-modal-result').textContent = data.result;
+    document.getElementById('cs-modal-link').href = data.url;
+    imgContainer.innerHTML = '<img src="' + data.image + '" alt="' + data.title + '">';
+
+    // Small delay to ensure layout before transition
+    requestAnimationFrame(function() {
+      overlay.classList.add('open');
+    });
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCaseModal() {
+    var overlay = document.getElementById('cs-modal-overlay');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Close button
+  document.getElementById('cs-modal-close').addEventListener('click', closeCaseModal);
+
+  // Click outside modal
+  document.getElementById('cs-modal-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeCaseModal();
+  });
+
+  // Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeCaseModal();
+  });
+
+  // Attach click handlers to cards
+  document.querySelectorAll('[data-case]').forEach(function(card) {
+    card.addEventListener('click', function() {
+      openCaseModal(this.getAttribute('data-case'));
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
