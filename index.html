@@ -1977,7 +1977,7 @@ body {
     hermes: {
       title: 'La Maison des Carr\u00e9s',
       subtitle: 'AKQA \u2014 Experience Strategy and Design',
-      image: 'case-studies/hermes-silk.jpg',
+      image: 'https://images.ctfassets.net/feazk3r7m969/7oBqkbrjMNWJ6YIhWTTiJf/f08a0d6ef6f67c6bb4b00298aabcb4d8/article-01-large-3.jpg?w=3840&q=70&fm=webp',
       challenge: 'Herm\u00e8s needed to transcend traditional e-commerce to showcase the artistry and fantasy of their silk scarves. The brand required an experience that honoured the creative world of Herm\u00e8s while remaining functional for presenting over 600 products.',
       solution: 'AKQA created an entirely illustrated, fully responsive digital experience inspired by an idealised physical store. The platform combined artistic presentation with intuitive e-commerce across 27 countries on any device.',
       result: 'FWA Site of the Day. Lovies Gold for Fashion & Beauty. Spikes Asia Gold for E-Commerce. Featured in Elle, Vogue, Forbes, Creative Review and New York Magazine.',
@@ -1986,7 +1986,7 @@ body {
     tagheuer: {
       title: 'TAG Heuer Connected Modular 45',
       subtitle: 'AKQA \u2014 Connected Commerce Platform',
-      image: 'case-studies/tag-heuer-connected.jpg',
+      image: 'https://images.ctfassets.net/feazk3r7m969/1zdzfGsmIhiNI9I5tBO2xw/82f266490a0c0302eca5338d13541888/article-01-a-large.jpg?w=3840&q=70&fm=webp',
       challenge: 'TAG Heuer needed to bridge the gap between traditional Swiss watchmaking and the connected device era. The product demanded a digital experience worthy of its horological heritage \u2014 one that felt like craftsmanship, not configuration.',
       solution: 'AKQA designed the Connected Modular 45 configurator \u2014 over 4,000 customisation combinations rendered in real time. Collectors could build their watch digitally, exploring every material, strap, and module before committing to craft.',
       result: '14.5 million minutes of engagement. A seamless bridge between digital exploration and physical ownership. Proof that luxury and technology can coexist when the experience is designed with the same care as the product.',
@@ -1995,7 +1995,7 @@ body {
     lvmh: {
       title: 'LVMH Digital Transformation',
       subtitle: 'AKQA \u2014 AI and Data Intelligence',
-      image: 'case-studies/lvmh-digital.jpg',
+      video: 'https://videos.ctfassets.net/feazk3r7m969/3ob3x8EPiF5h5ArKgXa1AN/305e92fb23d9ee1ddcd8928d4bd815d8/LV_Opening_video_Full_HD.mp4',
       challenge: 'The world\u2019s largest luxury group needed to transform its client intelligence infrastructure across multiple maisons \u2014 without losing the intimacy of personal service that defines luxury at its highest level.',
       solution: 'AKQA built scalable platforms for provenance tracking, personalisation engines, and unified client profiles. Disparate brand ecosystems connected into coherent intelligence \u2014 allowing each maison to know its clients deeply, across every touchpoint.',
       result: 'Client intelligence at enterprise scale. Provenance, personalisation, and cross-maison insights that strengthen every individual relationship. Technology that disappears behind the quality of the service.',
@@ -2004,7 +2004,7 @@ body {
     generative: {
       title: 'The Generative Store',
       subtitle: 'AKQA \u2014 Built with Google Gemini',
-      image: 'case-studies/generative-store-hero.png',
+      video: 'https://videos.ctfassets.net/feazk3r7m969/6lLprhFnCvYITAxfOxsAw1/d8c40c4049294ff06a40c7717a4576ab/WPP-Google_partnership_in_action-_AKQA-s_Generative_Store__built_with_Google_Gemini__transforming_luxury_e-commerce_into_per.mp4',
       challenge: 'Online shopping had become purely transactional \u2014 efficient but devoid of the emotion, intuition, and discovery that define great physical retail. The gap between browsing a website and being guided through a boutique had never been wider.',
       solution: 'AKQA reimagined the online store from first principles. Using generative AI, every page is assembled in real time \u2014 adapting copy, imagery, and narrative to each individual visitor\u2019s context, intent, and moment. Not a chatbot. A fully realised boutique.',
       result: 'Commerce rebuilt as experience. Global scale without sacrificing individual attention. A new paradigm for digital retail where every interaction feels curated, personal, and worthy of the product it represents.',
@@ -2024,7 +2024,11 @@ body {
     document.getElementById('cs-modal-solution').textContent = data.solution;
     document.getElementById('cs-modal-result').textContent = data.result;
     document.getElementById('cs-modal-link').href = data.url;
-    imgContainer.innerHTML = '<img src="' + data.image + '" alt="' + data.title + '">';
+    if (data.video) {
+      imgContainer.innerHTML = '<video autoplay muted loop playsinline src="' + data.video + '" style="width:100%;height:100%;object-fit:cover;"></video>';
+    } else {
+      imgContainer.innerHTML = '<img src="' + data.image + '" alt="' + data.title + '">';
+    }
 
     // Small delay to ensure layout before transition
     requestAnimationFrame(function() {
